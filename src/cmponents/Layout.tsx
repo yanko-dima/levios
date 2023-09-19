@@ -3,12 +3,12 @@ import { Outlet } from 'react-router-dom';
 
 export const Layout = () => {
   return (
-    <main>
-      <div>
+    <main style={{ padding: 25 }}>
+      <section>
         <Suspense fallback={null}>
           <Outlet />
         </Suspense>
-      </div>
+      </section>
     </main>
   );
 };

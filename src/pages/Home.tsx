@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Products } from '../cmponents/Products';
-import { SearchBar } from '../cmponents/SearchBar';
+import { SearchForm } from '../cmponents/SearchForm/SearchForm';
 import { IProduct } from '../models/IProducts';
 import { getAllProducts, getVisibleProducts } from '../servises/getProducts';
 
@@ -9,7 +9,7 @@ export default function Home() {
   const [submitSearch, setSubmitSearch] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const onSetSubmitSearch = (value: string) => {
+  const onSetSubmitSearch = (value: string, category: string) => {
     setSubmitSearch(value);
   };
 
@@ -23,10 +23,12 @@ export default function Home() {
       .finally(() => setIsLoading(false));
   }, []);
 
+  // console.log('products: ', products);
+
   return (
     <div>
       <h1>Products</h1>
-      <SearchBar onSetSubmitSearch={onSetSubmitSearch} />
+      <SearchForm onSetSubmitSearch={onSetSubmitSearch} />
 
       {isLoading ? (
         <p>Loading...</p>
