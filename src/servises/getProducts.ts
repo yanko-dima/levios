@@ -1,34 +1,36 @@
 import { AxiosInstance } from '../api/AxiosInstance';
 import { IProduct } from '../models/IProducts';
-import { ISearchFormValues } from '../models/ISearch';
 
-export const getAllProducts = async () => {
+export const getProducts = async () => {
   try {
     const res = await AxiosInstance.get('');
 
-    return res.data;
-  } catch (error) {}
+    return res.data['products'];
+  } catch (error) {
+    console.log('Error: ', (error as Error).message);
+  }
 };
 
 export const getVisibleProducts = (
   products: IProduct[],
-  searchData: ISearchFormValues
+  searchParams: URLSearchParams
 ) => {
-  const { search, category } = searchData;
+  const searchQuery = searchParams.get('search');
+  const categoryQuery = searchParams.get('category');
 
-  if (search.length || category.length) {
-    const searchOfName = products.filter(product =>
-      product.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())
-    );
+  return products.filter(item => {
+    const productName = item.name.toLocaleLowerCase();
+    const productCategory = item.bsr_category;
 
-    if (!category.length) {
-      return searchOfName;
-    } else {
-      return searchOfName.filter(product =>
-        product.bsr_category.includes(category)
+    if (searchQuery && categoryQuery)
+      return (
+        productName.includes(searchQuery) &&
+        productCategory.includes(categoryQuery)
       );
-    }
-  }
+    if (searchQuery && !categoryQuery) return productName.includes(searchQuery);
+    if (categoryQuery && !searchQuery)
+      return productCategory.includes(categoryQuery);
 
-  return products;
+    return true;
+  });
 };

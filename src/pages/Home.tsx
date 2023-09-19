@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Products } from '../cmponents/Products/Products';
 import { SearchForm } from '../cmponents/SearchForm/SearchForm';
-import { getAllProducts, getVisibleProducts } from '../servises/getProducts';
+import { getProducts, getVisibleProducts } from '../servises/getProducts';
 import { getCategories } from '../servises/getCategories';
+import { PageTitle } from '../cmponents/Title/PageTitle';
+import { Loader } from '../cmponents/Loader/Loader';
 import { IProduct } from '../models/IProducts';
 import { ISearchFormValues } from '../models/ISearch';
-import { PageTitle } from '../cmponents/Title/PageTitle';
 
 export default function Home() {
   const [products, setProducts] = useState<IProduct[]>([]);
@@ -14,24 +16,24 @@ export default function Home() {
     category: '',
   });
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const categories = getCategories(products);
 
   const onSetSubmitSearch = (search: string, category: string) => {
-    setSubmitSearch({ search, category });
+    setSearchParams({ search, category });
+
+    setSubmitSearch({
+      search,
+      category,
+    });
   };
 
   useEffect(() => {
-    getAllProducts()
-      .then(res => {
-        const fetchProducts = res['products'];
-
-        setProducts(fetchProducts);
-      })
+    getProducts()
+      .then(res => res && setProducts([...res]))
       .finally(() => setIsLoading(false));
   }, []);
-
-  useEffect(() => {}, []);
 
   return (
     <div>
@@ -40,11 +42,9 @@ export default function Home() {
         onSetSubmitSearch={onSetSubmitSearch}
         categories={categories}
       />
-
-      {isLoading ? (
-        <p>Loading...</p>
-      ) : (
-        <Products products={getVisibleProducts(products, submitSearch)} />
+      {isLoading && <Loader />}
+      {!isLoading && (
+        <Products products={getVisibleProducts(products, searchParams)} />
       )}
     </div>
   );

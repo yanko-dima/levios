@@ -5,19 +5,25 @@ import { validationSchema } from '../../servises/formValidation';
 import { SearchInput } from './SearchInput';
 import { SearchSelect } from './SearchSelect';
 import css from './SearchForm.module.css';
+import { useSearchParams } from 'react-router-dom';
 
 export const SearchForm: React.FC<ISearchForm> = ({
   onSetSubmitSearch,
   categories,
 }) => {
-  const initialValues: ISearchFormValues = { search: '', category: '' };
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchQuery = searchParams.get('search');
+  const categoryQuery = searchParams.get('category');
+
+  const initialValues: ISearchFormValues = {
+    search: searchQuery ? searchQuery : '',
+    category: categoryQuery ? categoryQuery : '',
+  };
 
   const handleSubmit = (values: ISearchFormValues) => {
     const { search, category } = values;
 
     onSetSubmitSearch(search.trim(), category);
-
-    console.log(values);
   };
 
   return (
