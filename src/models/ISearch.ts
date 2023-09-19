@@ -1,5 +1,6 @@
 export interface ISearchForm {
   onSetSubmitSearch: (value: string, category: string) => void;
+  categories: string[];
 }
 
 export interface ISearchFormValues {

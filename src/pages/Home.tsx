@@ -1,16 +1,24 @@
 import { useEffect, useState } from 'react';
-import { Products } from '../cmponents/Products';
+import { Products } from '../cmponents/Products/Products';
 import { SearchForm } from '../cmponents/SearchForm/SearchForm';
-import { IProduct } from '../models/IProducts';
 import { getAllProducts, getVisibleProducts } from '../servises/getProducts';
+import { getCategories } from '../servises/getCategories';
+import { IProduct } from '../models/IProducts';
+import { ISearchFormValues } from '../models/ISearch';
+import { PageTitle } from '../cmponents/Title/PageTitle';
 
 export default function Home() {
   const [products, setProducts] = useState<IProduct[]>([]);
-  const [submitSearch, setSubmitSearch] = useState<string>('');
+  const [submitSearch, setSubmitSearch] = useState<ISearchFormValues>({
+    search: '',
+    category: '',
+  });
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const onSetSubmitSearch = (value: string, category: string) => {
-    setSubmitSearch(value);
+  const categories = getCategories(products);
+
+  const onSetSubmitSearch = (search: string, category: string) => {
+    setSubmitSearch({ search, category });
   };
 
   useEffect(() => {
@@ -23,12 +31,15 @@ export default function Home() {
       .finally(() => setIsLoading(false));
   }, []);
 
-  // console.log('products: ', products);
+  useEffect(() => {}, []);
 
   return (
     <div>
-      <h1>Products</h1>
-      <SearchForm onSetSubmitSearch={onSetSubmitSearch} />
+      <PageTitle text="Products" />
+      <SearchForm
+        onSetSubmitSearch={onSetSubmitSearch}
+        categories={categories}
+      />
 
       {isLoading ? (
         <p>Loading...</p>

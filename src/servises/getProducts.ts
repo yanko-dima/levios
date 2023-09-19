@@ -1,5 +1,6 @@
 import { AxiosInstance } from '../api/AxiosInstance';
 import { IProduct } from '../models/IProducts';
+import { ISearchFormValues } from '../models/ISearch';
 
 export const getAllProducts = async () => {
   try {
@@ -11,14 +12,22 @@ export const getAllProducts = async () => {
 
 export const getVisibleProducts = (
   products: IProduct[],
-  searchValue: string
+  searchData: ISearchFormValues
 ) => {
-  if (searchValue.length) {
-    const showedProducts = products.filter(product =>
-      product.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())
+  const { search, category } = searchData;
+
+  if (search.length || category.length) {
+    const searchOfName = products.filter(product =>
+      product.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())
     );
 
-    return showedProducts;
+    if (!category.length) {
+      return searchOfName;
+    } else {
+      return searchOfName.filter(product =>
+        product.bsr_category.includes(category)
+      );
+    }
   }
 
   return products;

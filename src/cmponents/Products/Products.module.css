@@ -1,0 +1,25 @@
+.productsList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.productItem {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 280px;
+}
+
+.productName {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.productImage {
+    display: block;
+    margin-bottom: 12px;
+}

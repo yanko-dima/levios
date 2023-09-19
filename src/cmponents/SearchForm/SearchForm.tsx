@@ -1,44 +1,31 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { ISearchForm, ISearchFormValues } from '../../models/ISearch';
-import { Formik, Form, useFormik, useFormikContext, FormikProps } from 'formik';
+import { Formik, Form } from 'formik';
 import { validationSchema } from '../../servises/formValidation';
 import { SearchInput } from './SearchInput';
 import { SearchSelect } from './SearchSelect';
 import css from './SearchForm.module.css';
 
-// const categoriesOptions = [{ value: '', label: '' }];
-
-export const SearchForm: React.FC<ISearchForm> = ({ onSetSubmitSearch }) => {
+export const SearchForm: React.FC<ISearchForm> = ({
+  onSetSubmitSearch,
+  categories,
+}) => {
   const initialValues: ISearchFormValues = { search: '', category: '' };
-  const {
-    values,
-    errors,
-    isSubmitting,
-    submitForm,
-    handleChange, // handleSubmit,
-  }: FormikProps<ISearchFormValues> = useFormik<ISearchFormValues>({
-    initialValues,
-    onSubmit: () => {},
-    validationSchema,
-  });
 
   const handleSubmit = (values: ISearchFormValues) => {
     const { search, category } = values;
 
     onSetSubmitSearch(search.trim(), category);
-  };
 
-  // console.log('values: ', values);
+    console.log(values);
+  };
 
   return (
     <>
       <Formik
         initialValues={initialValues}
-        // onSubmit={handleSubmit}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting }) => {
-          console.log('values: ', values);
-        }}
+        onSubmit={handleSubmit}
       >
         <Form className={css.form}>
           <SearchInput
@@ -48,31 +35,18 @@ export const SearchForm: React.FC<ISearchForm> = ({ onSetSubmitSearch }) => {
           />
           <SearchSelect name="category">
             <option value="">Select a product category</option>
-            <option value="">Category 1</option>
-            <option value="">Category 2</option>
-            <option value="">Category 3</option>
+            {categories.map(category => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
           </SearchSelect>
 
-          <button
-            className={css.button}
-            type="submit"
-            // disabled={isSubmitting}
-          >
+          <button className={css.button} type="submit">
             Search
           </button>
         </Form>
       </Formik>
-
-      {/*<form   >*/}
-
-      {/*<button*/}
-      {/*className={css.button}*/}
-      {/*type="submit"*/}
-      {/*// disabled={isSubmitting}*/}
-      {/*>*/}
-      {/*Search*/}
-      {/*</button>*/}
-      {/*</form>*/}
     </>
   );
 };
