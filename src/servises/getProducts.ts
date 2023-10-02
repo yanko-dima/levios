@@ -19,8 +19,10 @@ export const getVisibleProducts = (
   const categoryQuery = searchParams.get('category');
 
   return products.filter(item => {
-    const productName = item.name.toLocaleLowerCase();
-    const productCategory = item.bsr_category;
+    const { name, bsr_category } = item;
+
+    const productName = name.toLocaleLowerCase();
+    const productCategory = bsr_category;
 
     if (searchQuery && categoryQuery)
       return (
